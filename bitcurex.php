@@ -1,22 +1,24 @@
 <?
 
-function cmpDESC($a, $b) {
-    if ($a[0] == $b[0])
-        return 0;
-    return ($a[0] < $b[0]) ? -1 : 1;
-}
-
-function cmpASC($a, $b) {
-    if ($a[0] == $b[0])
-        return 0;
-    return ($a[0] > $b[0]) ? -1 : 1;
-}
-
-Class Bitcurex {
+class Bitcurex {
 
     private $bitcurexUrl = 'https://api.bitcurex.com/v2/';
     private $apiKey;
     private $secretKey;
+    
+    private static function cmpDESC($a, $b) {
+        if ($a[0] == $b[0]) {
+            return 0;
+        }
+        return ($a[0] < $b[0]) ? -1 : 1;
+    }
+
+    private static function cmpASC($a, $b) {
+        if ($a[0] == $b[0]) {
+            return 0;
+        }
+        return ($a[0] > $b[0]) ? -1 : 1;
+    }
 
     public function __construct($apiKey = '', $secretKey = '') {
         $this->apiKey = $apiKey;
@@ -96,8 +98,8 @@ Class Bitcurex {
     public function orderBook($market = 'pln', $depth = 100) {
         $url = $market . '/' . $depth . '/orderbook';
         $data = $this->_getData($url);
-        usort($data->bids, "cmpASC");
-        usort($data->asks, "cmpDESC");
+        usort($data->bids, array($this, "cmpASC"));
+        usort($data->asks, array($this, "cmpDESC"));
         return $data;
     }
 
