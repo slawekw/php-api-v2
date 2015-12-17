@@ -47,28 +47,28 @@ Class Bitcurex {
     }
 
     public function getUserBalance($nonce = null) {
-        $nonce = $nonce == null ? time() : $nonce;
+        $nonce = $nonce == null ? $this->nonce() : $nonce;
         $hash = $this->hmac(array('nonce' => $nonce));
         $url = 'balance/' . $this->apiKey . '/' . $hash . '/?nonce=' . $nonce;
         return $this->_getData($url);
     }
 
     public function getUserOffers($market = 'pln', $nonce = null) {
-        $nonce = $nonce == null ? time() : $nonce;
+        $nonce = $nonce == null ? $this->nonce() : $nonce;
         $hash = $this->hmac(array('market' => $market, 'nonce' => $nonce));
         $url = 'offers/' . $market . '/' . $this->apiKey . '/' . $hash . '/?nonce=' . $nonce;
         return $this->_getData($url);
     }
 
     public function getAllOffers($market = 'pln', $nonce = null) {
-        $nonce = $nonce == null ? time() : $nonce;
+        $nonce = $nonce == null ? $this->nonce() : $nonce;
         $hash = $this->hmac(array('market' => $market, 'nonce' => $nonce));
         $url = 'all/offers/' . $market . '/' . $this->apiKey . '/' . $hash . '/?nonce=' . $nonce;
         return $this->_getData($url);
     }
 
     public function createOffer($market = 'pln', $limit, $volume, $offerType, $nonce = null) {
-        $nonce = $nonce == null ? time() : $nonce;
+        $nonce = $nonce == null ? $this->nonce() : $nonce;
         $array = array('limit' => $limit, 'market' => $market, 'nonce' => $nonce, 'offer_type' => $offerType, 'volume' => $volume);
         $array2 = array('limit' => $limit, 'nonce' => $nonce, 'offer_type' => $offerType, 'volume' => $volume);
         $hash = $this->hmac($array);
@@ -77,7 +77,7 @@ Class Bitcurex {
     }
 
     public function deleteOffer($offerId, $nonce = null) {
-        $nonce = $nonce == null ? time() : $nonce;
+        $nonce = $nonce == null ? $this->nonce() : $nonce;
         $array = array('offer_id' => "$offerId", 'nonce' => "$nonce");
         $array2 = array('nonce' => "$nonce", 'offer_id' => "$offerId");
         $hash = $this->hmac($array2);
@@ -86,7 +86,7 @@ Class Bitcurex {
     }
 
     public function getUserTransaction($market = 'pln', $fromts = 0, $nonce = null) {
-        $nonce = $nonce == null ? time() : $nonce;
+        $nonce = $nonce == null ? $this->nonce() : $nonce;
         $hash = $this->hmac(array('market' => $market, 'nonce' => $nonce, 'txid' => $fromts));
         $url = 'trades/' . $market . '/' . $fromts . '/' . $this->apiKey . '/' . $hash . '/?nonce=' . $nonce;
 
@@ -111,6 +111,9 @@ Class Bitcurex {
         return $this->_getData($url);
     }
 
+    protected function nonce() {
+        return round(microtime(true) * 1000);
+    }
 }
 
 ?>
